@@ -1,8 +1,22 @@
 #!/bin/bash
 
+export PORT=8085
+ORANGE='\033[0;33m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
 if [[ $1 == "start" ]]; then
   [[ "$(docker compose ps | grep keycloak_web | wc -l)" -gt "0" ]] && docker compose down
-  docker compose up -d && echo -e "\r\n ✔ Veuillez patienter quelques secondes ..." && sleep 10 && echo -e "\r\n ✔ KEYCLOAK dispo sur http://localhost:8080\r\n"
+  docker compose up -d && printf "\r\n${GREEN} ✔${NC} Veuillez patienter quelques secondes "
+  $(curl --head --silent --fail http://localhost:${PORT})
+  x=$?
+  while [[ $x -ne 0 ]]; do
+    sleep 2
+    curl --head --silent --fail http://localhost:${PORT} >/dev/null
+    x=$?
+    printf "${ORANGE}...${NC}"
+  done
+  printf "\r\n${GREEN} ✔${NC} KEYCLOAK est dispo via http://localhost:${PORT}\r\n"
 elif [[ $1 == "status" ]]; then
   docker compose ps
 elif [[ $1 == "stop" ]]; then
