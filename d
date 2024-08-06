@@ -8,13 +8,13 @@ options=(
   "Demarrer Keycloak"
   "Arreter Keycloak"
   "Revoir les options"
-  "Liste des ports utilisés"
-  "Changer de port"
+  #"Liste des ports utilisés"
+  #"Changer de port"
   "Afficher les containers Docker"
   "Supprimer un container Docker"
   "Arreter tous les containers Docker"
   "Afficher les images Docker"
-  "Supprimer une image Docker"
+  #"Supprimer une image Docker"
   "Quitter"
 )
 
