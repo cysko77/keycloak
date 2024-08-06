@@ -22,15 +22,15 @@ function start_keycloak {
   printf "${GREEN} ⬤ Demarrage de Keycloak en cours ...${NC}\r\n"
   [[ "$(docker compose ps | grep keycloak_web | wc -l)" -gt "0" ]] && docker compose down
   docker compose up -d && printf "\r\n${GREEN} ✔${NC} Veuillez patienter quelques secondes "
-  $(curl --head --silent --fail http://localhost:${KEYCLOAK_PORT})
+  $(curl --head --silent --fail http://${IP}:${KEYCLOAK_PORT})
   x=$?
   while [[ $x -ne 0 ]]; do
     sleep 2
-    curl --head --silent --fail http://localhost:${KEYCLOAK_PORT} >/dev/null
+    curl --head --silent --fail http://${IP}:${KEYCLOAK_PORT} >/dev/null
     x=$?
     printf "${ORANGE}...${NC}"
   done
-  printf "\r\n${GREEN} ✔${NC} KEYCLOAK est dispo via ${ORANGE}http://localhost:${KEYCLOAK_PORT}${NC}\r\n"
+  printf "\r\n${GREEN} ✔${NC} KEYCLOAK est dispo via ${ORANGE}http://${IP}:${KEYCLOAK_PORT}${NC}\r\n"
 }
 
 function stop_keycloak {
@@ -47,7 +47,7 @@ function change_port {
   read -p $'\e[33m$ ⬤ Entrez le port [Defaut: 8085]: \e[0m' port
   echo "Nouveau port attribué à keycloak: $port"
   export KEYCLOAK_PORT=${port}
-  export SILL_KEYCLOAK_URL=http://localhost:${KEYCLOAK_PORT}
+  export SILL_KEYCLOAK_URL=http://${IP}:${KEYCLOAK_PORT}
 }
 
 function remove_docker_image {
