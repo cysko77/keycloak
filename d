@@ -1,22 +1,11 @@
 #!/usr/bin/env bash
 
 ORANGE='\033[0;33m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
 GREEN='\033[0;32m'
 NC='\033[0m'
-
-options=(
-  "Demarrer Keycloak"
-  "Arreter Keycloak"
-  "Revoir les options"
-  #"Liste des ports utilisés"
-  #"Changer de port"
-  "Afficher les containers Docker"
-  "Supprimer un container Docker"
-  "Arreter tous les containers Docker"
-  "Afficher les images Docker"
-  #"Supprimer une image Docker"
-  "Quitter"
-)
 
 function start_keycloak {
   printf "${GREEN} ⬤ Demarrage de Keycloak en cours ...${NC}\r\n"
@@ -51,6 +40,7 @@ function change_port {
 }
 
 function remove_docker_image {
+  docker images
   read -p $'\e[33m$ ⬤ Entrez l\'Id ou le nom de l\'image à supprimer: \e[0m' image_id
   echo "Image supprimée: $image_id"
   docker rmi "$image_id"
@@ -62,9 +52,17 @@ function show_docker_containers {
 }
 
 function remove_docker_container {
+  docker ps -a
   read -p $'\e[33m$ ⬤ Entrez l\'Id ou le nom du container à supprimer: \e[0m' container_id
   echo "Container supprimé: $container_id"
   docker rm "$container_id"
+}
+
+function stop_container {
+  docker ps -a
+  read -p $'\e[33m$ ⬤ Entrez l\'Id ou le nom du container à stopper: \e[0m' container_id
+  echo "Container stoppé: $container_id"
+  docker stop "$container_id"
 }
 
 function stop_all_containers {
@@ -72,57 +70,50 @@ function stop_all_containers {
   docker stop $(docker ps -aq)
 }
 
-function reprint_options {
-  echo "Options valides:"
-  for index in "${!options[@]}"; do
-    echo "$((index + 1))) ${options[index]}"
-  done
-}
+#..........................................................................
+# menu
+#..........................................................................
+while true; do
+  #..........................................................................
+  # affichage
+  #..........................................................................
+  clear
+  echo -e "\r\n\t ${BLUE}⬤ Keycloak ==============================================${NC} 
 
-function list_ports {
-  echo "Liste des ports utilisés:"
-  ss -ltn | grep LISTEN | grep 0.0.0.0:[0-9][0-9] | awk 'BEGIN{FS=" "} {print $4}' | awk 'BEGIN{FS=":"} {print $2}'
-}
+\t ${GREEN}u [up]${NC}\t\t\t-->  Démarrer Keycloak
+\t ${ORANGE}d [down]${NC}\t\t-->  Arréter Keycloak
+\t ${RED}q [quit]${NC}\t\t-->  Quitter
 
-echo ""
-PS3=$'\r\n\e[33m ---> Entrez votre choix:\e[0m\r\n'
-select option in "${options[@]}"; do
-  case $option in
-  "Demarrer Keycloak")
-    start_keycloak
-    ;;
-  "Arreter Keycloak")
-    stop_keycloak
-    ;;
-  "Changer de port")
-    change_port
-    ;;
-  "Afficher les images Docker")
-    show_docker_images
-    ;;
-  "Supprimer une image Docker")
-    remove_docker_image
-    ;;
-  "Afficher les containers Docker")
-    show_docker_containers
-    ;;
-  "Supprimer un container Docker")
-    remove_docker_container
-    ;;
-  "Arreter tous les containers Docker")
-    stop_all_containers
-    ;;
-  "Liste des ports utilisés")
-    list_ports
-    ;;
-  "Revoir les options")
-    reprint_options
-    ;;
-  "Quitter")
-    break
-    ;;
-  *)
-    echo "Options invalide. Veuillez résessayer."
-    ;;
+\t ${BLUE}⬤ Container =============================================${NC}
+
+\t ${GREEN}sc [show container]${NC}\t-->  Afficher tous les containers
+\t ${ORANGE}so [stop one]${NC}\t\t-->  Arréter un container
+\t ${ORANGE}sa [stop all]${NC}\t\t-->  Arréter tous les containers
+\t ${RED}rm [remove]${NC}\t\t-->  Supprimer un container
+
+\t ${BLUE}⬤ Image =================================================${NC}
+
+\t ${GREEN}si  [show image]${NC}\t-->  Afficher toutes les images
+\t ${RED}rmi [remove image]${NC}\t-->  Supprimer une image
+
+\t ${CYAN}Entrez votre choix: ${NC} \c"
+
+  read answer
+  clear
+
+  case "$answer" in
+  u | up) start_keycloak ;;
+  d | down) stop_keycloak ;;
+  q) exit 0 ;;
+  show\ container | sc) show_docker_containers ;;
+  stop\ one | so) stop_container ;;
+  stop\ all | sa) stop_all_containers ;;
+  rm | remove) remove_docker_container ;;
+  si | show\ image) show_docker_images ;;
+  rmi | remove\ image) remove_docker_image ;;
+  *) echo "Choisissez une option affichee dans le menu:" ;;
   esac
+  echo ""
+  echo -e "${CYAN}Touche \"Enter\" pour afficher le menu${NC}"
+  read dummy
 done
