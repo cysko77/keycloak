@@ -29,7 +29,8 @@ body:form-urlencoded {
 
 script:post-response {
   if(res.body.error === undefined){
-    bru.setEnvVar("user_id",res.body[0].id)  
+    if(res.body[0] !== undefined)
+      bru.setEnvVar("user_id",res.body[0].id)  
   }
   
 }

@@ -1,5 +1,5 @@
 meta {
-  name: getClientsOfRealm
+  name: getClient
   type: http
   seq: 4
 }
@@ -29,6 +29,7 @@ body:json {
 
 script:post-response {
   if(res.body.error === undefined){
-    bru.setEnvVar("clients",res.body[0].id)
+    if(res.body[0] !== undefined)
+      bru.setEnvVar("clients",res.body[0].id)
   }
 }
