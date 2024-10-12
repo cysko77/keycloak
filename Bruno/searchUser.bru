@@ -1,0 +1,35 @@
+meta {
+  name: searchUser
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{url}}/admin/realms/{{realm}}/users?email=cyrille.kozlowski@ars.sante.fr
+  body: none
+  auth: bearer
+}
+
+params:query {
+  email: cyrille.kozlowski@ars.sante.fr
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:form-urlencoded {
+  ~username: {{username}}
+  ~password: {{password}}
+  ~client_id: {{client_id}}
+  ~grant_type: {{grant_type}}
+  ~scope: {{scope}}
+  ~client_secret: {{client_secret}}
+}
+
+script:post-response {
+  if(res.body.error === undefined){
+    bru.setEnvVar("user_id",res.body[0].id)  
+  }
+  
+}

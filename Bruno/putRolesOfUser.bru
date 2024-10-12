@@ -1,0 +1,28 @@
+meta {
+  name: putRolesOfUser
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{url}}/admin/realms/{{realm}}/users/{{user_id}}/role-mappings/clients/{{clients}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:json {
+  [
+    {
+      "id":"32fe1b30-22f7-4592-8a1b-53b6e3f81d23",
+      "name": "admin"
+    },
+    {
+      "id":"6b7bdf5e-3463-424c-bf76-f638cc86e6c1",
+      "name": "referent"
+    }
+  ]
+}

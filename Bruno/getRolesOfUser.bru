@@ -1,0 +1,24 @@
+meta {
+  name: getRolesOfUser
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{url}}/admin/realms/{{realm}}/users/{{user_id}}/role-mappings/clients/{{clients}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:json {
+  [
+    {
+      "id":"32fe1b30-22f7-4592-8a1b-53b6e3f81d23",
+      "name": "admin"
+    }
+  ]
+}

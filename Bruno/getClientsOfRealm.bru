@@ -1,0 +1,34 @@
+meta {
+  name: getClientsOfRealm
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{url}}/admin/realms/{{realm}}/clients?clientId={{client_id}}
+  body: none
+  auth: bearer
+}
+
+params:query {
+  clientId: {{client_id}}
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:json {
+  [
+    {
+      "id":"32fe1b30-22f7-4592-8a1b-53b6e3f81d23",
+      "name": "admin"
+    }
+  ]
+}
+
+script:post-response {
+  if(res.body.error === undefined){
+    bru.setEnvVar("clients",res.body[0].id)
+  }
+}

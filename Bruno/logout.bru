@@ -1,0 +1,21 @@
+meta {
+  name: logout
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{url}}/realms/{{realm}}/protocol/openid-connect/logout
+  body: formUrlEncoded
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:form-urlencoded {
+  refresh_token: {{refresh_jwt_token}}
+  client_id: {{client_id}}
+  client_secret: {{client_secret}}
+}

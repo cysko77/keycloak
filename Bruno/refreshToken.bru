@@ -1,0 +1,27 @@
+meta {
+  name: refreshToken
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{url}}/realms/{{realm}}/protocol/openid-connect/token
+  body: formUrlEncoded
+  auth: none
+}
+
+body:form-urlencoded {
+  client_id: {{client_id}}
+  grant_type: {{grant_type_refresh}}
+  client_secret: {{client_secret}}
+  scope: {{scope}}
+  refresh_token: {{refresh_jwt_token}}
+}
+
+script:post-response {
+  if(res.body.error === undefined){
+    bru.setEnvVar("jwt_token",res.body.access_token)
+    bru.setEnvVar("refresh_jwt_token",res.body.refresh_token)
+    bru.setEnvVar("id_jwt_token",res.body.id_token)
+  }
+}

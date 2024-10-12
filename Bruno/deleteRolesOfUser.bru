@@ -1,0 +1,24 @@
+meta {
+  name: deleteRolesOfUser
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{url}}/admin/realms/{{realm}}/users/{{user_id}}/role-mappings/clients/{{clients}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+body:json {
+  [
+    {
+      "id":"6b7bdf5e-3463-424c-bf76-f638cc86e6c1",
+      "name": "referent"
+    }
+  ]
+}
